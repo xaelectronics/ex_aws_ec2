@@ -456,7 +456,7 @@ defmodule ExAws.EC2 do
   ]
   @spec request_spot_instances(instance_count :: integer, type :: binary, launch_specification :: request_spot_launch_specification_spec) :: ExAws.Operation.Query.t
   @spec request_spot_instances(instance_count :: integer, type :: binary, launch_specification :: request_spot_launch_specification_spec, opts :: request_spot_instances_opts) :: ExAws.Operation.Query.t
-  def request_spot_instances(image_id, min_count, max_count, opts \\ []) do
+  def request_spot_instances(instance_count, type, launch_specification, opts \\ []) do
     [ {"InstanceCount", instance_count},
       {"Type", type},
       {"LaunchSpecification", launch_specification} |
