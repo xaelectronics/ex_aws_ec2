@@ -120,7 +120,7 @@ defmodule ExAws.EC2 do
     placement: binary,
     ramdisk_id: binary,
     security_groups: binary,
-    security_group_ids: binary,
+    security_group_id: binary,
     subnet_id: binary,
     user_data: binary,
   ]
@@ -412,7 +412,7 @@ defmodule ExAws.EC2 do
         image_id: binary,
         instance_type: binary,
         key_name: binary,
-        security_group_ids: binary,
+        security_group_id: binary,
       ]
       iex> ExAws.EC2.request_spot_instances(count, type, spec)
 
@@ -449,7 +449,7 @@ defmodule ExAws.EC2 do
     private_ip_address: binary,
     ramdisk_id: binary,
     security_groups: [binary, ...],
-    security_group_ids: [binary, ...],
+    security_group_id: [binary, ...],
     subnet_id: binary,
     tag_specifications: [tag_specification, ...],
     user_data: binary
