@@ -170,6 +170,16 @@ defmodule ExAws.EC2 do
     opts |> build_request(:describe_instances)
   end
 
+  @type describe_spot_instance_requests_opts :: [
+    dry_run: boolean,
+    filters: [filter, ...],
+    spot_instance_request_ids: [binary, ...],
+  ]
+  @spec describe_spot_instance_requests() :: ExAws.Operation.Query.t
+  @spec describe_spot_instance_requests(opts :: describe_spot_instance_requests_opts) :: ExAws.Operation.Query.t
+  def describe_spot_instance_requests(opts \\ []) do
+    opts |> build_request(:describe_spot_instance_requests)
+  end
 
   @doc """
   Describes the status of one or more instances. By default, only running
