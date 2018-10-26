@@ -106,6 +106,24 @@ defmodule ExAws.EC2 do
     spread_domain: binary,
     tenancy: binary
   ]
+  @type request_spot_launch_specification_spec :: [
+    addressing_type: binary,
+    block_device_mappings: binary,
+    ebs_optimized: binary,
+    iam_instance_profile: binary,
+    image_id: binary,
+    instance_type: binary,
+    kernel_id: binary,
+    key_name: binary,
+    monitoring: binary,
+    network_interfaces: binary,
+    placement: binary,
+    ramdisk_id: binary,
+    security_groups: binary,
+    security_group_ids: binary,
+    subnet_id: binary,
+    user_data: binary,
+  ]
 
   #######################
   # Instance Operations #
@@ -388,28 +406,15 @@ defmodule ExAws.EC2 do
   Doc: https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RequestSpotInstances.html
 
   ## Examples:
-
-      iex> ExAws.EC2.request_spot_instances("ami-123456", 3, 3,
-      ...> [block_device_mappings: [
-      ...>  [device_name: "/dev/sdc", virtual_name: "ephemeral10"],
-      ...>  [device_name: "/dev/sdd", virtual_name: "ephemeral11"],
-      ...>  [device_name: "/dev/sdf", ebs: [delete_on_termination: true, volume_size: 100]]
-      ...> ]])
-      %ExAws.Operation.Query{action: :run_instances,
-      params: %{
-        "Action" => "RunInstances",
-        "ImageId" => "ami-123456",
-        "MinCount" => 3,
-        "MaxCount" => 3,
-        "BlockDeviceMapping.1.DeviceName" => "/dev/sdc",
-        "BlockDeviceMapping.1.VirtualName" => "ephemeral10",
-        "BlockDeviceMapping.2.DeviceName" => "/dev/sdd",
-        "BlockDeviceMapping.2.VirtualName" => "ephemeral11",
-        "BlockDeviceMapping.3.DeviceName" => "/dev/sdf",
-        "BlockDeviceMapping.3.Ebs.DeleteOnTermination" => true,
-        "BlockDeviceMapping.3.Ebs.VolumeSize" => 100,
-        "Version" => "2016-11-15"
-      }, parser: &ExAws.Utils.identity/2, path: "/", service: :ec2}
+      iex> count = 10
+      iex> type = "one-time" # one-time | persistent
+      iex> spec = [
+        image_id: binary,
+        instance_type: binary,
+        key_name: binary,
+        security_group_ids: binary,
+      ]
+      iex> ExAws.EC2.request_spot_instances(count, type, spec)
 
   """
   @type request_spot_instances_opts :: [
@@ -418,9 +423,7 @@ defmodule ExAws.EC2 do
     instance_count: integer,
     instance_interruption_behavior: [binary, ...], #["hibernate", "stop", "terminate"]
     launch_group: binary,
-    # launch_specification: request_spot_launch_specification_spec,
     spot_price: binary,
-    type: [binary, ...], #["one-time", "persistent"],
     valid_from: binary,
     valid_until: binary,
 
@@ -451,12 +454,12 @@ defmodule ExAws.EC2 do
     tag_specifications: [tag_specification, ...],
     user_data: binary
   ]
-  @spec request_spot_instances(image_id :: binary, min_count :: integer, max_count :: integer) :: ExAws.Operation.Query.t
-  @spec request_spot_instances(image_id :: binary, min_count :: integer, max_count :: integer, opts :: request_spot_instances_opts) :: ExAws.Operation.Query.t
+  @spec request_spot_instances(instance_count :: integer, type :: binary, launch_specification :: request_spot_launch_specification_spec) :: ExAws.Operation.Query.t
+  @spec request_spot_instances(instance_count :: integer, type :: binary, launch_specification :: request_spot_launch_specification_spec, opts :: request_spot_instances_opts) :: ExAws.Operation.Query.t
   def request_spot_instances(image_id, min_count, max_count, opts \\ []) do
-    [ {"ImageId", image_id},
-      {"MinCount", min_count},
-      {"MaxCount", max_count} |
+    [ {"InstanceCount", instance_count},
+      {"Type", type},
+      {"LaunchSpecification", launch_specification} |
       opts ]
       |> build_request(:request_spot_instances)
   end
