@@ -124,6 +124,10 @@ defmodule ExAws.EC2 do
     subnet_id: binary,
     user_data: binary,
   ]
+  @type instance_credit_spec :: [
+    cpu_credits: binary,
+    instance_id: binary
+  ]
 
   #######################
   # Instance Operations #
@@ -173,7 +177,7 @@ defmodule ExAws.EC2 do
   @type describe_spot_instance_requests_opts :: [
     dry_run: boolean,
     filters: [filter, ...],
-    spot_instance_request_ids: [binary, ...],
+    spot_instance_request_id: [binary, ...],
   ]
   @spec describe_spot_instance_requests() :: ExAws.Operation.Query.t
   @spec describe_spot_instance_requests(opts :: describe_spot_instance_requests_opts) :: ExAws.Operation.Query.t
@@ -654,6 +658,22 @@ defmodule ExAws.EC2 do
   def modify_instance_attribute(instance_id, opts \\ []) do
     [ {"InstanceId", instance_id} | opts ]
       |> build_request(:modify_instance_attribute)
+  end
+
+  @doc """
+  Modifies the credit option for CPU usage on a running or stopped T2 or T3
+  instance. The credit options are standard and unlimited.
+
+  Doc: https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ModifyInstanceCreditSpecification.html
+  """
+  @type modify_instance_credit_specification_opts :: [
+    client_token: binary,
+    dry_run: boolean,
+    instance_credit_specification: [instance_credit_spec, ...],
+  ]
+  @spec modify_instance_credit_specification(opts :: modify_instance_credit_specification_opts) :: ExAws.Operation.Query.t
+  def modify_instance_credit_specification(opts \\ []) do
+    opts |> build_request(:modify_instance_credit_specification)
   end
 
 
